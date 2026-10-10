@@ -57,7 +57,7 @@ async fn main() {
         }
 
         if input_mode_enabled {
-            widgets::Window::new(hash!(), vec2(200., 100.), vec2(320., 400.))
+            widgets::Window::new(hash!(), vec2(20., 220.), vec2(320., 400.))
                 .label("Input menu")
                 .titlebar(true)
                 .ui(&mut *root_ui(), |ui| {
