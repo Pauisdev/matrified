@@ -82,6 +82,6 @@ fn draw_debug_info(camera: &Camera3D, delta: f32, theta: f32) {
     draw_multiline_text(debug_info, 0., 20., 32., None, WHITE);
 }
 
-fn traverse_points(A: &Vec3, B: &Vec3, delta: f32) -> Vec3 {
-    *A + delta * (*B - *A)
+fn traverse_points(a: &Vec3, b: &Vec3, delta: f32) -> Vec3 {
+    *a + delta * (*b - *a)
 }
