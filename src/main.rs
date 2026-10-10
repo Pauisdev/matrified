@@ -6,7 +6,7 @@ const FONT_SIZE: f32 = 32.;
 
 #[macroquad::main("Matrified")]
 async fn main() {
-    let initial_camera_position = vec3(0., 7., -20.);
+    let initial_camera_position = vec3(0., 7., 20.);
     let mut theta: f32 = 0.;
     let mut delta = 0.;
     let mut camera = Camera3D {
@@ -34,14 +34,8 @@ async fn main() {
         let camera_position = traverse_points(&initial_camera_position, &camera.target, delta);
         let camera_position = rotate_x(&camera_position, theta);
         camera.position = camera_position;
-        let mut x = -100.;
-        while x < 100. {
-            let f = |x: f32| x.powf(2.);
-            let y = f(x as f32);
-            let position = vec3(x as f32, y, 0.);
-            draw_cube(position, Vec3::ONE * 0.1, None, RED);
-            x += 0.02;
-        }
+
+        render_function(&expression);
 
         set_default_camera();
 
@@ -143,5 +137,23 @@ fn ui_skin() -> Skin {
         editbox_style,
         title_height: FONT_SIZE,
         ..root_ui().default_skin()
+    }
+}
+
+fn render_function(expression: &String) {
+    let mut x = -100.;
+    while x < 100. {
+        let expr: meval::Expr = match expression.parse() {
+            Ok(ex) => ex,
+            Err(_) => return,
+        };
+        let f = match expr.bind("x") {
+            Ok(fun) => fun,
+            Err(_) => return,
+        };
+        let y = f(x);
+        let position = vec3(x as f32, y as f32, 0.);
+        draw_cube(position, Vec3::ONE * 0.1, None, RED);
+        x += 0.02;
     }
 }
