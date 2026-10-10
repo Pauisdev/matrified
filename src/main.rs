@@ -18,42 +18,18 @@ async fn main() {
         set_camera(&camera);
 
         draw_grid(20, 1., WHITE, GRAY);
-        let start = vec3(7.0, 5.0, -10.0);
-        let end = vec3(50.0, 10.0, 20.0);
-        draw_line_3d(start, end, GREEN);
+
         let (_, mouse_wheel) = mouse_wheel(); // -1 backwards, +1 forward
         delta += mouse_wheel * 0.02;
 
-        let A = initial_camera_position;
-        let B = camera.target;
-        let camera_position = A + delta * (B - A);
-
+        let camera_position = traverse_points(&initial_camera_position, &camera.target, delta);
         let camera_position = rotate_x(&camera_position, theta);
         camera.position = camera_position;
 
         set_default_camera();
 
         if show_debug_info {
-            let debug_info = format!(
-                "\
-            [camera] \n\
-            * direction: ({}, {}, {}) \n\
-            * position: ({}, {}, {}) \n\n\
-            [general] \n\
-            * fps: {} \n\
-            * delta: {} \n\
-            * theta: {}",
-                camera.target.x,
-                camera.target.y,
-                camera.target.z,
-                camera.position.x,
-                camera.position.y,
-                camera.position.z,
-                get_fps(),
-                delta,
-                theta
-            );
-            draw_multiline_text(debug_info, 0., 20., 32., None, WHITE);
+            draw_debug_info(&camera, delta, theta);
         }
 
         if is_key_down(KeyCode::D) {
@@ -81,4 +57,31 @@ fn rotate_x(original: &Vec3, angle: f32) -> Vec3 {
         original.y,
         original.x * angle.sin() + original.z * angle.cos(),
     )
+}
+
+fn draw_debug_info(camera: &Camera3D, delta: f32, theta: f32) {
+    let debug_info = format!(
+        "\
+            [camera] \n\
+            * direction: ({}, {}, {}) \n\
+            * position: ({}, {}, {}) \n\n\
+            [general] \n\
+            * fps: {} \n\
+            * delta: {} \n\
+            * theta: {}",
+        camera.target.x,
+        camera.target.y,
+        camera.target.z,
+        camera.position.x,
+        camera.position.y,
+        camera.position.z,
+        get_fps(),
+        delta,
+        theta
+    );
+    draw_multiline_text(debug_info, 0., 20., 32., None, WHITE);
+}
+
+fn traverse_points(A: &Vec3, B: &Vec3, delta: f32) -> Vec3 {
+    *A + delta * (*B - *A)
 }
