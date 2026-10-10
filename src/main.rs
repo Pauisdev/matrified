@@ -2,7 +2,7 @@ use macroquad::prelude::*;
 
 #[macroquad::main("Matrified")]
 async fn main() {
-    let initial_camera_position = vec3(0., 20., -50.);
+    let initial_camera_position = vec3(0., 7., -20.);
     let mut theta: f32 = 0.;
     let mut delta = 0.;
     let mut camera = Camera3D {
@@ -11,6 +11,7 @@ async fn main() {
         ..Default::default()
     };
     set_fullscreen(true);
+    let mut input_mode_enabled = false;
     let mut show_debug_info = true;
 
     loop {
@@ -47,8 +48,49 @@ async fn main() {
             break;
         }
 
+        if input_mode_enabled {
+            open_input_menu();
+        }
+
+        if is_key_pressed(KeyCode::Tab) {
+            input_mode_enabled = !input_mode_enabled;
+        }
+
         next_frame().await;
     }
+}
+
+fn open_input_menu() {
+    draw_input_menu_background();
+}
+
+fn draw_input_menu_background() {
+    let horizontal_quadrant_size = screen_width() / 5.;
+    let vertical_quadrant_size = screen_height() / 7.;
+
+    let x1 = horizontal_quadrant_size;
+    let x2 = horizontal_quadrant_size * 4.;
+    let y1 = vertical_quadrant_size;
+    let y2 = vertical_quadrant_size * 6.;
+
+    draw_rectangle(x1, y1, x1 * 3., y1 * 5., Color::new(0., 0., 0., 0.9));
+    draw_box(x1, y1, x2, y2);
+}
+
+fn draw_box(x1: f32, y1: f32, x2: f32, y2: f32) {
+    let top_left_corner = vec2(x1, y1);
+    let top_right_corner = vec2(x2, y1);
+    let bottom_right_corner = vec2(x2, y2);
+    let bottom_left_corner = vec2(x1, y2);
+
+    connect_points(&top_left_corner, &top_right_corner);
+    connect_points(&top_right_corner, &bottom_right_corner);
+    connect_points(&bottom_right_corner, &bottom_left_corner);
+    connect_points(&bottom_left_corner, &top_left_corner);
+}
+
+fn connect_points(a: &Vec2, b: &Vec2) {
+    draw_line(a.x, a.y, b.x, b.y, 1., WHITE);
 }
 
 fn rotate_x(original: &Vec3, angle: f32) -> Vec3 {
