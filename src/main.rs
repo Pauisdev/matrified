@@ -12,7 +12,6 @@ async fn main() {
     };
     set_fullscreen(true);
     let mut show_debug_info = true;
-    let mut dots: Vec<Vec3> = vec![];
 
     loop {
         clear_background(BLACK);
@@ -27,19 +26,10 @@ async fn main() {
 
         let A = initial_camera_position;
         let B = camera.target;
-        let mut X = A + delta * (B - A);
+        let camera_position = A + delta * (B - A);
 
-        X.x = X.x * theta.cos() - X.z * theta.sin();
-        X.z = X.x * theta.sin() + X.z * theta.cos();
-        camera.position = X;
-
-        let mut dot = camera.position;
-        dot.y = 0.;
-
-        dots.push(dot);
-        for dot in dots.clone() {
-            draw_cube(dot, Vec3::ONE, None, BLUE);
-        }
+        let camera_position = rotate_x(&camera_position, theta);
+        camera.position = camera_position;
 
         set_default_camera();
 
@@ -83,4 +73,12 @@ async fn main() {
 
         next_frame().await;
     }
+}
+
+fn rotate_x(original: &Vec3, angle: f32) -> Vec3 {
+    vec3(
+        original.x * angle.cos() - original.z * angle.sin(),
+        original.y,
+        original.x * angle.sin() + original.z * angle.cos(),
+    )
 }
