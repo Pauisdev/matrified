@@ -1,4 +1,5 @@
 use macroquad::prelude::*;
+const FONT_SIZE: f32 = 32.;
 
 #[macroquad::main("Matrified")]
 async fn main() {
@@ -61,7 +62,12 @@ async fn main() {
 }
 
 fn open_input_menu() {
+    let text = "\
+        Insert an expression below:\n\
+        > x**2+5
+    ";
     draw_input_menu_background();
+    draw_multiline_text(text, 300., 200., FONT_SIZE, None, WHITE);
 }
 
 fn draw_input_menu_background() {
@@ -121,7 +127,7 @@ fn draw_debug_info(camera: &Camera3D, delta: f32, theta: f32) {
         delta,
         theta
     );
-    draw_multiline_text(debug_info, 0., 20., 32., None, WHITE);
+    draw_multiline_text(debug_info, 0., 20., FONT_SIZE, None, WHITE);
 }
 
 fn traverse_points(a: &Vec3, b: &Vec3, delta: f32) -> Vec3 {
