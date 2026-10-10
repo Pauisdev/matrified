@@ -1,4 +1,7 @@
-use macroquad::prelude::*;
+use macroquad::{
+    prelude::*,
+    ui::{Skin, hash, root_ui, widgets},
+};
 const FONT_SIZE: f32 = 32.;
 
 #[macroquad::main("Matrified")]
@@ -14,9 +17,13 @@ async fn main() {
     set_fullscreen(true);
     let mut input_mode_enabled = false;
     let mut show_debug_info = true;
+    let mut expression = String::new();
+    let skin = ui_skin();
+    root_ui().push_skin(&skin);
 
     loop {
         clear_background(BLACK);
+
         set_camera(&camera);
 
         draw_grid(20, 1., WHITE, GRAY);
@@ -50,7 +57,12 @@ async fn main() {
         }
 
         if input_mode_enabled {
-            open_input_menu();
+            widgets::Window::new(hash!(), vec2(200., 100.), vec2(320., 400.))
+                .label("Input menu")
+                .titlebar(true)
+                .ui(&mut *root_ui(), |ui| {
+                    ui.input_text(hash!(), "Expression", &mut expression);
+                });
         }
 
         if is_key_pressed(KeyCode::Tab) {
@@ -59,44 +71,6 @@ async fn main() {
 
         next_frame().await;
     }
-}
-
-fn open_input_menu() {
-    let text = "\
-        Insert an expression below:\n\
-        > x**2+5
-    ";
-    draw_input_menu_background();
-    draw_multiline_text(text, 300., 200., FONT_SIZE, None, WHITE);
-}
-
-fn draw_input_menu_background() {
-    let horizontal_quadrant_size = screen_width() / 5.;
-    let vertical_quadrant_size = screen_height() / 7.;
-
-    let x1 = horizontal_quadrant_size;
-    let x2 = horizontal_quadrant_size * 4.;
-    let y1 = vertical_quadrant_size;
-    let y2 = vertical_quadrant_size * 6.;
-
-    draw_rectangle(x1, y1, x1 * 3., y1 * 5., Color::new(0., 0., 0., 0.9));
-    draw_box(x1, y1, x2, y2);
-}
-
-fn draw_box(x1: f32, y1: f32, x2: f32, y2: f32) {
-    let top_left_corner = vec2(x1, y1);
-    let top_right_corner = vec2(x2, y1);
-    let bottom_right_corner = vec2(x2, y2);
-    let bottom_left_corner = vec2(x1, y2);
-
-    connect_points(&top_left_corner, &top_right_corner);
-    connect_points(&top_right_corner, &bottom_right_corner);
-    connect_points(&bottom_right_corner, &bottom_left_corner);
-    connect_points(&bottom_left_corner, &top_left_corner);
-}
-
-fn connect_points(a: &Vec2, b: &Vec2) {
-    draw_line(a.x, a.y, b.x, b.y, 1., WHITE);
 }
 
 fn rotate_x(original: &Vec3, angle: f32) -> Vec3 {
@@ -132,4 +106,34 @@ fn draw_debug_info(camera: &Camera3D, delta: f32, theta: f32) {
 
 fn traverse_points(a: &Vec3, b: &Vec3, delta: f32) -> Vec3 {
     *a + delta * (*b - *a)
+}
+
+fn ui_skin() -> Skin {
+    let window_titlebar_style = root_ui()
+        .style_builder()
+        .font_size(FONT_SIZE as u16)
+        .text_color(WHITE)
+        .build();
+    let label_style = root_ui()
+        .style_builder()
+        .font_size(FONT_SIZE as u16)
+        .text_color(WHITE)
+        .build();
+    let editbox_style = root_ui()
+        .style_builder()
+        .font_size(FONT_SIZE as u16)
+        .build();
+    let window_style = root_ui()
+        .style_builder()
+        .font_size(FONT_SIZE as u16)
+        .background(Image::gen_image_color(320, 400, DARKBLUE))
+        .build();
+    Skin {
+        window_style,
+        window_titlebar_style,
+        label_style,
+        editbox_style,
+        title_height: FONT_SIZE,
+        ..root_ui().default_skin()
+    }
 }
