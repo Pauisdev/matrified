@@ -76,13 +76,11 @@ async fn main() {
 fn render_function(expression: &String) {
     let mut x = -100.;
     while x < 100. {
-        let expr: meval::Expr = match expression.parse() {
-            Ok(ex) => ex,
-            Err(_) => return,
+        let Ok(expr) = expression.parse::<meval::Expr>() else {
+            return; // exit out if theres no expression or its malformed
         };
-        let f = match expr.bind("x") {
-            Ok(fun) => fun,
-            Err(_) => return,
+        let Ok(f) = expr.bind("x") else {
+            return; // exit out if expression contains variables other than `x`
         };
         let y = f(x);
         let position = vec3(x as f32, y as f32, 0.);
