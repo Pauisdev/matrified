@@ -7,34 +7,26 @@ const INITIAL_CAMERA_POSITION: Vec3 = vec3(0., 7., 20.);
 
 #[macroquad::main("Matrified")]
 async fn main() {
-    let mut theta: f32 = 0.;
-    let mut delta = 0.;
+    set_fullscreen(true);
+    let mut state = State::new();
+    ui::push_styles();
     let mut camera = Camera3D {
         position: INITIAL_CAMERA_POSITION,
         up: vec3(0., 1., 0.),
         ..Default::default()
     };
 
-    set_fullscreen(true);
-    let mut input_mode_enabled = false;
-    let mut show_debug_info = true;
-
-    let mut state = State::new();
-    ui::push_styles();
-
     loop {
         clear_background(BLACK);
-
         set_camera(&camera);
-
         draw_grid(20, 1., WHITE, GRAY);
 
         let (_, mouse_wheel) = mouse_wheel(); // -1 backwards, +1 forward
-        delta += mouse_wheel * 0.02;
+        state.zoom += mouse_wheel * 0.02;
 
         let camera_position =
-            math::traverse_points(&INITIAL_CAMERA_POSITION, &camera.target, delta);
-        let camera_position = math::rotate_x(&camera_position, theta);
+            math::traverse_points(&INITIAL_CAMERA_POSITION, &camera.target, state.zoom); // apply zoom
+        let camera_position = math::rotate_x(&camera_position, state.rotation_radians); // apply rotation
         camera.position = camera_position;
 
         render_function(&state.expression);
@@ -42,31 +34,31 @@ async fn main() {
         // drop back to 2D so we can draw text/shapes on screen
         set_default_camera();
 
-        if show_debug_info {
-            ui::draw_debug_info(&camera, delta, theta);
+        if state.show_debug_info {
+            ui::draw_debug_info(&camera, &state);
         }
 
         if is_key_down(KeyCode::D) {
-            theta += 1. * get_frame_time();
+            state.rotation_radians -= 1. * get_frame_time();
         }
         if is_key_down(KeyCode::A) {
-            theta -= 1. * get_frame_time();
+            state.rotation_radians += 1. * get_frame_time();
         }
 
         if is_key_pressed(KeyCode::F1) {
-            show_debug_info = !show_debug_info;
+            state.show_debug_info = !state.show_debug_info;
         }
 
         if is_key_pressed(KeyCode::Escape) {
             break;
         }
 
-        if input_mode_enabled {
+        if state.input_mode_enabled {
             ui::draw(&mut state);
         }
 
         if is_key_pressed(KeyCode::Tab) {
-            input_mode_enabled = !input_mode_enabled;
+            state.input_mode_enabled = !state.input_mode_enabled;
         }
 
         next_frame().await;

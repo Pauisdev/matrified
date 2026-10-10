@@ -4,12 +4,20 @@ use macroquad::ui::{Skin, hash, root_ui, widgets};
 const FONT_SIZE: f32 = 32.;
 
 pub struct State {
+    pub rotation_radians: f32,
+    pub zoom: f32,
+    pub input_mode_enabled: bool,
+    pub show_debug_info: bool,
     pub expression: String,
 }
 
 impl State {
     pub fn new() -> State {
         State {
+            rotation_radians: 0.,
+            zoom: 0.,
+            input_mode_enabled: false,
+            show_debug_info: true,
             expression: String::new(),
         }
     }
@@ -63,25 +71,26 @@ fn skin() -> Skin {
     }
 }
 
-pub fn draw_debug_info(camera: &Camera3D, delta: f32, theta: f32) {
+pub fn draw_debug_info(camera: &Camera3D, state: &State) {
     let debug_info = format!(
         "\
             [camera] \n\
             * direction: ({}, {}, {}) \n\
-            * position: ({}, {}, {}) \n\n\
+            * position: ({:.2}, {:.2}, {:.2}) \n\
+            * rotation_radians: {:.2}pi\n\
+            * zoom: {:.2}\n\n\
             [general] \n\
             * fps: {} \n\
-            * delta: {} \n\
-            * theta: {}",
+            ",
         camera.target.x,
         camera.target.y,
         camera.target.z,
         camera.position.x,
         camera.position.y,
         camera.position.z,
+        state.rotation_radians,
+        state.zoom,
         get_fps(),
-        delta,
-        theta
     );
     draw_multiline_text(debug_info, 0., 20., FONT_SIZE, None, WHITE);
 }
