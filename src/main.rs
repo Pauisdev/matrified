@@ -1,5 +1,7 @@
 mod math;
 mod ui;
+use std::ops::Range;
+
 use macroquad::prelude::*;
 use ui::State;
 
@@ -29,7 +31,7 @@ async fn main() {
         let camera_position = math::rotate_x(&camera_position, state.rotation_radians); // apply rotation
         camera.position = camera_position;
 
-        render_function(&state.expression);
+        render_function(&state.expression, &state.render_range);
 
         // drop back to 2D so we can draw text/shapes on screen
         set_default_camera();
@@ -65,16 +67,17 @@ async fn main() {
     }
 }
 
-fn render_function(expression: &String) {
-    let mut x = -100.;
-    while x < 100. {
+fn render_function(expression: &String, render_range: &Range<f32>) {
+    let mut x = render_range.start;
+    while x < render_range.end {
         let Ok(expr) = expression.parse::<meval::Expr>() else {
             return; // exit out if theres no expression or its malformed
         };
+
         let Ok(f) = expr.bind("x") else {
             return; // exit out if expression contains variables other than `x`
         };
-        let y = f(x);
+        let y = f(x as f64);
         let position = vec3(x as f32, y as f32, 0.);
         draw_cube(position, Vec3::ONE * 0.1, None, RED);
         x += 0.02;

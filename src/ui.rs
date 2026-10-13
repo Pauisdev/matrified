@@ -1,3 +1,5 @@
+use std::ops::Range;
+
 use macroquad::prelude::*;
 use macroquad::ui::{Skin, hash, root_ui, widgets};
 
@@ -9,6 +11,7 @@ pub struct State {
     pub input_mode_enabled: bool,
     pub show_debug_info: bool,
     pub expression: String,
+    pub render_range: Range<f32>,
 }
 
 impl State {
@@ -19,17 +22,22 @@ impl State {
             input_mode_enabled: false,
             show_debug_info: true,
             expression: String::new(),
+            render_range: -100.0..100.0,
         }
     }
 }
 
 /// Draws the UI with whatever `state` given.
 pub fn draw(state: &mut State) {
-    widgets::Window::new(hash!(), vec2(20., 220.), vec2(320., 400.))
+    widgets::Window::new(hash!(), vec2(20., 220.), vec2(500., 400.))
         .label("Input menu")
         .titlebar(true)
         .ui(&mut *root_ui(), |ui| {
             ui.input_text(hash!(), "Expression", &mut state.expression);
+            ui.separator();
+            ui.label(None, "Function");
+            ui.drag(hash!(), "Min", None, &mut state.render_range.start);
+            ui.drag(hash!(), "Max", None, &mut state.render_range.end);
         });
 }
 
