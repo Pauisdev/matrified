@@ -38,20 +38,17 @@ fn render(f: &impl Fn(f64) -> f64, render_distance: f32) {
 
     let mut x = -render_distance;
     while x < render_distance {
-        let y = derivative_of_f(x as f64);
+        let y = f(x as f64);
         let position = vec3(x, y as f32, 0.);
         draw_cube(position, Vec3::ONE * 0.1, None, RED);
         x += 0.02;
     }
 
     for root in roots.clone() {
-        let position = vec3(root as f32, 0., 0.);
+        let y = f(root);
+        let position = vec3(root as f32, y as f32, 0.);
         draw_cube(position, Vec3::ONE * 0.5, None, YELLOW);
     }
-
-    set_default_camera();
-    println!("Roots found: {roots:?}");
-    draw_text(format!("Roots found: {roots:?}"), 800., 100., 30., WHITE);
 }
 
 /// Given a function `f` that meets the following criteria below and a range `[a,b]`, finds a root in such range.
@@ -60,6 +57,8 @@ fn render(f: &impl Fn(f64) -> f64, render_distance: f32) {
 /// - `f` has a single root (or none)
 /// # Caution
 /// It doesn't actually find the true root, rather gets as close up to `K` distance away from true zero.
+///
+/// If the range `[a,b]` is too big, it may not be able to find it in `0..10` tries. In that case, consider shortening the range.
 fn find_root(f: &impl Fn(f64) -> f64, a: f64, b: f64) -> Option<f64> {
     let sign_of_a = f(a).signum();
     let sign_of_b = f(b).signum();
