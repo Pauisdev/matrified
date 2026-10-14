@@ -26,17 +26,6 @@ fn render(f: &impl Fn(f64) -> f64, render_distance: f32) {
     // find roots on the derivative to get max and mins of the original function
     let mins_and_maxs = math::find_roots(&derivative_of_f, render_distance);
 
-    // render with previous method for debugging purposes
-    let mut x = -render_distance;
-    while x < render_distance {
-        let y = f(x as f64);
-        let position = vec3(x, y as f32, -3.);
-        draw_cube(position, Vec3::ONE * 0.1, None, RED);
-        x += 0.02;
-    }
-
-    // render with new method
-
     let mut points_to_draw = vec![];
     points_to_draw.extend(mins_and_maxs);
     let splits = 1000;
