@@ -1,8 +1,7 @@
 mod math;
 mod ui;
-use std::ops::Range;
-
 use macroquad::prelude::*;
+use std::ops::Range;
 use ui::State;
 
 const INITIAL_CAMERA_POSITION: Vec3 = vec3(0., 7., 20.);
@@ -83,8 +82,11 @@ fn render_function(expression: &String, render_range: &Range<f32>) {
         let position = vec3(x as f32, y as f32, 0.);
         draw_cube(position, Vec3::ONE * 0.1, None, RED);
 
-        // this line here breaks UI input for some reason
-        draw_cube(vec3(1., 1., 1.), Vec3::ONE * 0.1, None, YELLOW);
+        // draw f'
+        let derivative_of_f = math::derivative(f);
+        let y = derivative_of_f(x as f64);
+        let position = vec3(x as f32, y as f32, 0.);
+        draw_cube(position, Vec3::ONE * 0.1, None, YELLOW);
 
         x += 0.02;
     }

@@ -18,3 +18,9 @@ pub fn rotate_x(original: &Vec3, angle: f32) -> Vec3 {
 pub fn traverse_points(a: &Vec3, b: &Vec3, lambda: f32) -> Vec3 {
     *a + lambda * (*b - *a)
 }
+
+const H: f64 = 1e-5;
+
+pub fn derivative(f: impl Fn(f64) -> f64) -> impl Fn(f64) -> f64 {
+    move |x| (f(x + H) - f(x)) / H
+}
