@@ -7,6 +7,8 @@ An insanely fast function plotter I'm working on.
 - [ ] Matrix system solving
 - [ ] Matrix system visualization
 - [ ] Plane rendering
+- [ ] Switch between 2D and 3D rendering
+- [ ] Points and applying matrices to them 
 
 ## (Maybe) supported platforms
 - [x] Linux 
