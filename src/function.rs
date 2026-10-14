@@ -5,7 +5,7 @@ use crate::math;
 
 pub fn draw(
     expression: &String,
-    render_distance: f32,
+    render_distance: i32,
     distance_draw_cutoff: f32,
     sample_size: i32,
     root_splits: i32,
@@ -13,7 +13,7 @@ pub fn draw(
 ) {
     let computed_points = compute_points(
         expression.clone(),
-        render_distance as i32,
+        render_distance,
         sample_size,
         root_splits,
         root_tries,

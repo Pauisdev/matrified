@@ -9,7 +9,7 @@ pub struct State {
     pub input_mode_enabled: bool,
     pub show_debug_info: bool,
     pub expression: String,
-    pub render_distance: f32,
+    pub render_distance: i32,
     pub root_splits: i32,
     pub root_find_tries: i32,
     pub sample_size: i32,
@@ -24,7 +24,7 @@ impl State {
             input_mode_enabled: false,
             show_debug_info: true,
             expression: String::new(),
-            render_distance: 100.,
+            render_distance: 100,
             root_splits: 100,
             root_find_tries: 10,
             sample_size: 1000,
@@ -45,8 +45,7 @@ pub fn draw(state: &mut State) {
             ui.separator();
             ui.label("Renderer");
             ui.add(
-                egui::Slider::new(&mut state.render_distance, 0.0..=10000.0)
-                    .text("Render distance"),
+                egui::Slider::new(&mut state.render_distance, 0..=10000).text("Render distance"),
             );
             ui.add(egui::Slider::new(&mut state.sample_size, 0..=5000).text("Sample size"));
             ui.add(
