@@ -10,7 +10,6 @@ const INITIAL_CAMERA_POSITION: Vec3 = vec3(0., 7., 20.);
 async fn main() {
     set_fullscreen(true);
     let mut state = State::new();
-    ui::push_styles();
     let mut camera = Camera3D {
         position: INITIAL_CAMERA_POSITION,
         up: vec3(0., 1., 0.),
@@ -30,7 +29,14 @@ async fn main() {
         let camera_position = math::rotate_x(&camera_position, state.rotation_radians); // apply rotation
         camera.position = camera_position;
 
-        function::draw(&state.expression, state.render_distance);
+        function::draw(
+            &state.expression,
+            state.render_distance,
+            state.distance_draw_cutoff,
+            state.sample_size,
+            state.root_splits,
+            state.root_find_tries,
+        );
 
         // drop back to 2D so we can draw text/shapes on screen
         set_default_camera();
@@ -53,15 +59,13 @@ async fn main() {
         if is_key_pressed(KeyCode::Escape) {
             break;
         }
-
-        if state.input_mode_enabled {
-            ui::draw(&mut state);
-        }
+        ui::draw(&mut state);
 
         if is_key_pressed(KeyCode::Tab) {
             state.input_mode_enabled = !state.input_mode_enabled;
         }
 
+        egui_macroquad::draw();
         next_frame().await;
     }
 }

@@ -3,13 +3,26 @@ use macroquad::prelude::*;
 
 use crate::math;
 
-pub fn draw(expression: &String, render_distance: f32) {
-    let computed_points = compute_points(expression.clone(), render_distance as i32);
+pub fn draw(
+    expression: &String,
+    render_distance: f32,
+    distance_draw_cutoff: f32,
+    sample_size: i32,
+    root_splits: i32,
+    root_tries: i32,
+) {
+    let computed_points = compute_points(
+        expression.clone(),
+        render_distance as i32,
+        sample_size,
+        root_splits,
+        root_tries,
+    );
     if computed_points.len() == 0 {
         return;
     }
 
-    render(computed_points);
+    render(computed_points, distance_draw_cutoff);
 }
 
 fn parse(expression: &String) -> Option<impl Fn(f64) -> f64> {
@@ -24,7 +37,7 @@ fn parse(expression: &String) -> Option<impl Fn(f64) -> f64> {
     Some(f)
 }
 
-fn render(points: Vec<(f32, f32)>) {
+fn render(points: Vec<(f32, f32)>, distance_draw_cutoff: f32) {
     let mut i = 0;
     while i < points.len() - 1 {
         let (x1, y1) = points[i];
@@ -32,7 +45,7 @@ fn render(points: Vec<(f32, f32)>) {
 
         // if difference between points is too high, assume they go to opposite infinities and don't connect them
         let dy = (y1 - y2).abs();
-        if dy > 40. {
+        if dy > distance_draw_cutoff {
             i += 1;
             continue;
         }
@@ -45,19 +58,29 @@ fn render(points: Vec<(f32, f32)>) {
 }
 
 #[cached]
-fn compute_points(expression: String, render_distance: i32) -> Vec<(f32, f32)> {
+fn compute_points(
+    expression: String,
+    render_distance: i32,
+    sample_size: i32,
+    root_splits: i32,
+    root_tries: i32,
+) -> Vec<(f32, f32)> {
     let f = parse(&expression);
     let Some(f) = f else {
         return vec![];
     };
     let derivative_of_f = math::derivative(&f);
     // find roots on the derivative to get max and mins of the original function
-    let mins_and_maxs = math::find_roots(&derivative_of_f, render_distance as f32);
+    let mins_and_maxs = math::find_roots(
+        &derivative_of_f,
+        render_distance as f32,
+        root_splits,
+        root_tries,
+    );
     let mut points_to_compute = vec![];
     points_to_compute.extend(mins_and_maxs);
-    let splits = 1000;
-    let gap = render_distance as f32 / splits as f32;
-    for i in -splits..splits {
+    let gap = render_distance as f32 / sample_size as f32;
+    for i in -sample_size..sample_size {
         let x = i as f32 * gap as f32;
         points_to_compute.push(x as f64);
     }

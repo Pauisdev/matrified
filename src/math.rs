@@ -25,14 +25,18 @@ pub fn derivative(f: impl Fn(f64) -> f64) -> impl Fn(f64) -> f64 {
     move |x| (f(x + H) - f(x)) / H
 }
 
-pub fn find_roots(f: &impl Fn(f64) -> f64, render_distance: f32) -> Vec<f64> {
-    let splits = 100;
+pub fn find_roots(
+    f: &impl Fn(f64) -> f64,
+    render_distance: f32,
+    splits: i32,
+    tries: i32,
+) -> Vec<f64> {
     let gap = render_distance / splits as f32;
     let mut roots = vec![];
     for i in -splits..splits {
         let a = i as f32 * gap;
         let b = (i + 1) as f32 * gap;
-        let root = find_root(&f, a as f64, b as f64);
+        let root = find_root(&f, a as f64, b as f64, tries);
         if let Some(root) = root {
             roots.push(root);
         }
@@ -40,20 +44,20 @@ pub fn find_roots(f: &impl Fn(f64) -> f64, render_distance: f32) -> Vec<f64> {
     roots
 }
 
-/// Given a function `f` that meets the following criteria below and a range `[a,b]`, finds a root in such range.
+/// Given a function `f` that meets the following criteria below, a range `[a,b]` and the amount of `tries` to do, finds a root in such range.
 /// # Criteria
 /// - `f` is continous in the range `[a,b]`
 /// - `f` has a single root (or none)
 /// # Caution
-/// It doesn't actually find the true root, rather gets as close up to `K` distance away from true zero.
+/// It doesn't actually find the true root, rather gets as close as `CLOSENESS_TO_ZERO` distance away from true zero.
 ///
-/// If the range `[a,b]` is too big, it may not be able to find it in `0..10` tries. In that case, consider shortening the range.
-fn find_root(f: &impl Fn(f64) -> f64, a: f64, b: f64) -> Option<f64> {
+/// If the range `[a,b]` is too big, it may not be able to find it in the amount of `tries` defined. In that case, consider either shortening the range or increasing the amount of tries.
+fn find_root(f: &impl Fn(f64) -> f64, a: f64, b: f64, tries: i32) -> Option<f64> {
     let sign_of_a = f(a).signum();
     let sign_of_b = f(b).signum();
 
     let mut c = (a + b) / 2.;
-    for _ in 0..10 {
+    for _ in 0..tries {
         let image_of_c = f(c);
         let sign_of_c = image_of_c.signum();
         if is_roughly_zero(image_of_c) {
@@ -71,6 +75,8 @@ fn find_root(f: &impl Fn(f64) -> f64, a: f64, b: f64) -> Option<f64> {
     None
 }
 
+const CLOSENESS_TO_ZERO: f64 = 0.1;
+
 fn is_roughly_zero(value: f64) -> bool {
-    value > -0.1 && value < 0.1
+    value > -CLOSENESS_TO_ZERO && value < CLOSENESS_TO_ZERO
 }
