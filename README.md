@@ -2,11 +2,11 @@
 An insanely fast function plotter I'm working on.
 
 ## Checklist and plans for the future
-[x] 2D function plotting
-[ ] 3D function plotting
-[ ] Matrix system solving
-[ ] Matrix system visualization
-[ ] Plane rendering
+- [x] 2D function plotting
+- [ ] 3D function plotting
+- [ ] Matrix system solving
+- [ ] Matrix system visualization
+- [ ] Plane rendering
 
 ## (Maybe) supported platforms
 - [x] Linux 
