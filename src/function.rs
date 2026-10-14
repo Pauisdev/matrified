@@ -24,7 +24,7 @@ fn parse(expression: &String) -> Option<impl Fn(f64) -> f64> {
 fn render(f: &impl Fn(f64) -> f64, render_distance: f32) {
     let derivative_of_f = math::derivative(f);
     // find roots on the derivative to get max and mins of the original function
-    let mins_and_maxs = find_roots(&derivative_of_f, render_distance);
+    let mins_and_maxs = math::find_roots(&derivative_of_f, render_distance);
 
     // render with previous method for debugging purposes
     let mut x = -render_distance;
@@ -46,54 +46,4 @@ fn render(f: &impl Fn(f64) -> f64, render_distance: f32) {
 
         i += 1;
     }
-}
-
-fn find_roots(f: &impl Fn(f64) -> f64, render_distance: f32) -> Vec<f64> {
-    let splits = 100;
-    let gap = render_distance / splits as f32;
-    let mut roots = vec![];
-    for i in -splits..splits {
-        let a = i as f32 * gap;
-        let b = (i + 1) as f32 * gap;
-        let root = find_root(&f, a as f64, b as f64);
-        if let Some(root) = root {
-            roots.push(root);
-        }
-    }
-    roots
-}
-
-/// Given a function `f` that meets the following criteria below and a range `[a,b]`, finds a root in such range.
-/// # Criteria
-/// - `f` is continous in the range `[a,b]`
-/// - `f` has a single root (or none)
-/// # Caution
-/// It doesn't actually find the true root, rather gets as close up to `K` distance away from true zero.
-///
-/// If the range `[a,b]` is too big, it may not be able to find it in `0..10` tries. In that case, consider shortening the range.
-fn find_root(f: &impl Fn(f64) -> f64, a: f64, b: f64) -> Option<f64> {
-    let sign_of_a = f(a).signum();
-    let sign_of_b = f(b).signum();
-
-    let mut c = (a + b) / 2.;
-    for _ in 0..10 {
-        let image_of_c = f(c);
-        let sign_of_c = image_of_c.signum();
-        if is_roughly_zero(image_of_c) {
-            return Some(c);
-        }
-        if sign_of_c != sign_of_a {
-            c = (a + c) / 2.; // the root must be in the range [a,c]
-        } else if sign_of_c != sign_of_b {
-            c = (c + b) / 2.; // the root must be in the range [c,b]
-        } else {
-            // there's no roots
-            return None;
-        }
-    }
-    None
-}
-
-fn is_roughly_zero(value: f64) -> bool {
-    value > -0.1 && value < 0.1
 }
