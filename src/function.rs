@@ -42,6 +42,9 @@ fn render(f: &impl Fn(f64) -> f64, render_distance: f32) {
         return;
     }
     let mut i = 0;
+    // Edge case: x^2 (only one min/max value)
+    // In that case, first check from loop is i < 1-1, which is i < 0 which is 0 < 0 (let mut i = 0;)
+    // which is false, so it doesnt even enter the while loop. As it should.
     while i < mins_and_maxs.len() - 1 {
         let current = mins_and_maxs[i];
         let next = mins_and_maxs[i + 1];
