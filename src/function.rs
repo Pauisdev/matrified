@@ -36,6 +36,11 @@ fn render(f: &impl Fn(f64) -> f64, render_distance: f32) {
     }
 
     // render with new method
+
+    //if function has no min/max points
+    if mins_and_maxs.len() == 0 {
+        return;
+    }
     let mut i = 0;
     while i < mins_and_maxs.len() - 1 {
         let current = mins_and_maxs[i];
