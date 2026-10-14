@@ -44,6 +44,12 @@ fn render(f: &impl Fn(f64) -> f64, render_distance: f32) {
     }*/
 }
 
+/// Given a function `f` that meets the following criteria below and a range `[a,b]`, finds a root in such range.
+/// # Criteria
+/// - `f` is continous in the range `[a,b]`
+/// - `f` has a single root (or none)
+/// # Caution
+/// It doesn't actually find the true root, rather gets as close up to `K` distance away from true zero.
 fn find_root(f: impl Fn(f64) -> f64, a: f64, b: f64) -> Option<f64> {
     let sign_of_a = f(a).signum();
     let sign_of_b = f(b).signum();
@@ -57,9 +63,9 @@ fn find_root(f: impl Fn(f64) -> f64, a: f64, b: f64) -> Option<f64> {
             return Some(image_of_c);
         }
         if sign_of_c != sign_of_a {
-            c = (a + c) / 2.;
+            c = (a + c) / 2.; // the root must be in the range [a,c]
         } else if sign_of_c != sign_of_b {
-            c = (c + b) / 2.;
+            c = (c + b) / 2.; // the root must be in the range [c,b]
         } else {
             // there's no roots
             return None;
