@@ -30,7 +30,7 @@ async fn main() {
         let camera_position = math::rotate_x(&camera_position, state.rotation_radians); // apply rotation
         camera.position = camera_position;
 
-        render_function(&state.expression, &state.render_range);
+        render_function(&state.expression, state.render_distance);
 
         // drop back to 2D so we can draw text/shapes on screen
         set_default_camera();
@@ -66,9 +66,9 @@ async fn main() {
     }
 }
 
-fn render_function(expression: &String, render_range: &Range<f32>) {
-    let mut x = render_range.start;
-    while x < render_range.end {
+fn render_function(expression: &String, render_distance: f32) {
+    let mut x = -render_distance;
+    while x < render_distance {
         let Ok(expr) = expression.parse::<meval::Expr>() else {
             return; // exit out if theres no expression or its malformed
         };

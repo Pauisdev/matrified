@@ -11,7 +11,7 @@ pub struct State {
     pub input_mode_enabled: bool,
     pub show_debug_info: bool,
     pub expression: String,
-    pub render_range: Range<f32>,
+    pub render_distance: f32,
 }
 
 impl State {
@@ -22,7 +22,7 @@ impl State {
             input_mode_enabled: false,
             show_debug_info: true,
             expression: String::new(),
-            render_range: -100.0..100.0,
+            render_distance: 100.,
         }
     }
 }
@@ -36,8 +36,7 @@ pub fn draw(state: &mut State) {
             ui.input_text(hash!(), "Expression", &mut state.expression);
             ui.separator();
             ui.label(None, "Function");
-            ui.drag(hash!(), "Min", None, &mut state.render_range.start);
-            ui.drag(hash!(), "Max", None, &mut state.render_range.end);
+            ui.drag(hash!(), "Draw distance", None, &mut state.render_distance);
         });
 }
 
