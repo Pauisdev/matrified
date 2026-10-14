@@ -40,10 +40,17 @@ fn render(f: &impl Fn(f64) -> f64, render_distance: f32) {
     while i < mins_and_maxs.len() - 1 {
         let current = mins_and_maxs[i];
         let next = mins_and_maxs[i + 1];
-        let start = vec3(current as f32, f(current) as f32, 0.);
-        let end = vec3(next as f32, f(next) as f32, 0.);
-        draw_line_3d(start, end, YELLOW);
+        let middle = (current + next) / 2.;
+        draw_line_following_function(f, current, middle);
+        draw_line_following_function(f, middle, next);
 
         i += 1;
     }
+}
+
+/// Given two x values and a function, applies them to the function and draws a line between.
+fn draw_line_following_function(f: impl Fn(f64) -> f64, x1: f64, x2: f64) {
+    let start = vec3(x1 as f32, f(x1) as f32, 0.);
+    let end = vec3(x2 as f32, f(x2) as f32, 0.);
+    draw_line_3d(start, end, YELLOW);
 }
