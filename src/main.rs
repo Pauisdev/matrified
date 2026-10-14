@@ -1,7 +1,7 @@
+mod function;
 mod math;
 mod ui;
 use macroquad::prelude::*;
-use std::ops::Range;
 use ui::State;
 
 const INITIAL_CAMERA_POSITION: Vec3 = vec3(0., 7., 20.);
@@ -30,7 +30,7 @@ async fn main() {
         let camera_position = math::rotate_x(&camera_position, state.rotation_radians); // apply rotation
         camera.position = camera_position;
 
-        render_function(&state.expression, state.render_distance);
+        function::draw(&state.expression, state.render_distance);
 
         // drop back to 2D so we can draw text/shapes on screen
         set_default_camera();
@@ -63,31 +63,5 @@ async fn main() {
         }
 
         next_frame().await;
-    }
-}
-
-fn render_function(expression: &String, render_distance: f32) {
-    let mut x = -render_distance;
-    while x < render_distance {
-        let Ok(expr) = expression.parse::<meval::Expr>() else {
-            return; // exit out if theres no expression or its malformed
-        };
-
-        let Ok(f) = expr.bind("x") else {
-            return; // exit out if expression contains variables other than `x`
-        };
-
-        // draw f
-        let y = f(x as f64);
-        let position = vec3(x as f32, y as f32, 0.);
-        draw_cube(position, Vec3::ONE * 0.1, None, RED);
-
-        // draw f'
-        let derivative_of_f = math::derivative(f);
-        let y = derivative_of_f(x as f64);
-        let position = vec3(x as f32, y as f32, 0.);
-        draw_cube(position, Vec3::ONE * 0.1, None, YELLOW);
-
-        x += 0.02;
     }
 }
