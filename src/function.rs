@@ -23,32 +23,44 @@ fn parse(expression: &String) -> Option<impl Fn(f64) -> f64> {
 
 fn render(f: &impl Fn(f64) -> f64, render_distance: f32) {
     let derivative_of_f = math::derivative(f);
+    // find roots on the derivative to get max and mins of the original function
+    let mins_and_maxs = find_roots(&derivative_of_f, render_distance);
 
+    // render with previous method for debugging purposes
+    let mut x = -render_distance;
+    while x < render_distance {
+        let y = f(x as f64);
+        let position = vec3(x, y as f32, -3.);
+        draw_cube(position, Vec3::ONE * 0.1, None, RED);
+        x += 0.02;
+    }
+
+    // render with new method
+    let mut i = 0;
+    while i < mins_and_maxs.len() - 1 {
+        let current = mins_and_maxs[i];
+        let next = mins_and_maxs[i + 1];
+        let start = vec3(current as f32, f(current) as f32, 0.);
+        let end = vec3(next as f32, f(next) as f32, 0.);
+        draw_line_3d(start, end, YELLOW);
+
+        i += 1;
+    }
+}
+
+fn find_roots(f: &impl Fn(f64) -> f64, render_distance: f32) -> Vec<f64> {
     let splits = 100;
     let gap = render_distance / splits as f32;
     let mut roots = vec![];
     for i in -splits..splits {
         let a = i as f32 * gap;
         let b = (i + 1) as f32 * gap;
-        let root = find_root(&derivative_of_f, a as f64, b as f64);
+        let root = find_root(&f, a as f64, b as f64);
         if let Some(root) = root {
             roots.push(root);
         }
     }
-
-    let mut x = -render_distance;
-    while x < render_distance {
-        let y = f(x as f64);
-        let position = vec3(x, y as f32, 0.);
-        draw_cube(position, Vec3::ONE * 0.1, None, RED);
-        x += 0.02;
-    }
-
-    for root in roots.clone() {
-        let y = f(root);
-        let position = vec3(root as f32, y as f32, 0.);
-        draw_cube(position, Vec3::ONE * 0.5, None, YELLOW);
-    }
+    roots
 }
 
 /// Given a function `f` that meets the following criteria below and a range `[a,b]`, finds a root in such range.
