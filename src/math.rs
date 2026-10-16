@@ -1,17 +1,5 @@
-use std::fmt::Display;
-
 use macroquad::prelude::*;
-
-pub fn rotate_x(original: &Vec3, yaw: f32, pitch: f32) -> Vec3 {
-    let x = original.x;
-    let z = original.y;
-    let y = original.z;
-    vec3(
-        (yaw.cos() * pitch.cos()) * x + (-yaw.sin() * pitch.cos()) * y + pitch.sin() * z,
-        yaw.sin() * x + yaw.cos() * y,
-        (-pitch.sin() * yaw.cos()) * x + (-pitch.sin() * -yaw.sin()) * y + pitch.cos() * z,
-    )
-}
+use std::fmt::Display;
 
 #[derive(Copy, Clone)]
 pub struct SphericalCoordinates {
@@ -48,17 +36,6 @@ impl Display for SphericalCoordinates {
             self.distance, self.phi, self.theta
         )
     }
-}
-
-///
-/// Traverses the line intersecting both points.
-/// # Usage
-/// `λ = 0` will return A whilst `λ = 1` returns B.
-/// # Caution
-/// If both points are the same A + λ(B-A) turns into A + λ(A-A) = A so it will always return the original point.
-
-pub fn traverse_points(a: &Vec3, b: &Vec3, lambda: f32) -> Vec3 {
-    *a + lambda * (*b - *a)
 }
 
 const H: f64 = 1e-5;
