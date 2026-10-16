@@ -32,9 +32,7 @@ async fn main() {
         camera.position = state.position.into();
 
         handle_movement(&mut state);
-        if is_key_pressed(KeyCode::F1) {
-            state.show_debug_info = !state.show_debug_info;
-        }
+
         if is_key_pressed(KeyCode::Tab) {
             state.input_mode_enabled = !state.input_mode_enabled;
         }
@@ -44,10 +42,6 @@ async fn main() {
 
         // drop back to 2D so we can draw text/shapes on screen
         set_default_camera();
-
-        if state.show_debug_info {
-            ui::draw_debug_info(&state);
-        }
 
         ui::draw(&mut state);
         egui_macroquad::draw();

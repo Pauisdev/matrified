@@ -2,8 +2,6 @@ use crate::state::State;
 use egui_macroquad::egui;
 use macroquad::prelude::*;
 
-const FONT_SIZE: f32 = 32.;
-
 /// Draws the UI with whatever `state` given.
 pub fn draw(state: &mut State) {
     egui_macroquad::ui(|egui_ctx| {
@@ -28,19 +26,9 @@ pub fn draw(state: &mut State) {
             ui.add(egui::Slider::new(&mut state.root_splits, 0..=500).text("Splits"));
             ui.add(egui::Slider::new(&mut state.root_find_tries, 1..=100).text("Tries"));
         });
+        egui::Window::new("Debug info").show(egui_ctx, |ui| {
+            ui.label(format!("Position: {}", state.position));
+            ui.label(format!("FPS: {}", get_fps()))
+        });
     });
-}
-
-pub fn draw_debug_info(state: &State) {
-    let debug_info = format!(
-        "\
-            [camera] \n\
-            * position: {} \n\
-            [general] \n\
-            * fps: {} \n\
-            ",
-        state.position,
-        get_fps(),
-    );
-    draw_multiline_text(debug_info, 0., 20., FONT_SIZE, None, WHITE);
 }

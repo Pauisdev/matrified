@@ -3,7 +3,6 @@ use crate::math::SphericalCoordinates;
 pub struct State {
     pub position: SphericalCoordinates,
     pub input_mode_enabled: bool,
-    pub show_debug_info: bool,
     pub expression: String,
     pub render_distance: i32,
     pub root_splits: i32,
@@ -17,7 +16,6 @@ impl State {
         State {
             position: SphericalCoordinates::from_distance(10.),
             input_mode_enabled: false,
-            show_debug_info: true,
             expression: String::new(),
             render_distance: 100,
             root_splits: 100,
