@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use std::fmt::Display;
+use std::{f32::consts::PI, fmt::Display};
 
 #[derive(Copy, Clone)]
 pub struct SphericalCoordinates {
@@ -13,7 +13,7 @@ impl From<f32> for SphericalCoordinates {
         SphericalCoordinates {
             distance,
             phi: 1.,
-            theta: 0.,
+            theta: PI / 2.,
         }
     }
 }
