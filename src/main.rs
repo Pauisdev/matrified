@@ -4,7 +4,7 @@ mod state;
 mod ui;
 use crate::state::State;
 use macroquad::prelude::*;
-use std::f32::{INFINITY, consts::PI};
+use std::f32::consts::PI;
 
 #[macroquad::main("Matrified")]
 async fn main() {
@@ -51,14 +51,14 @@ async fn main() {
 }
 
 const MOVEMENT_SPEED: f32 = 2.;
-const ZOOM_SPEED: f32 = 30.;
+const ZOOM_SPEED: f32 = 0.3;
 const MIN_ZOOM: f32 = 1.;
 
 fn handle_movement(state: &mut State) {
     let delta = get_frame_time();
 
     let (_, mouse_wheel) = mouse_wheel(); // -1 backwards, +1 forward
-    state.position.distance -= mouse_wheel * ZOOM_SPEED * delta;
+    state.position.distance -= mouse_wheel * state.position.distance / ZOOM_SPEED * delta;
 
     if is_key_down(KeyCode::D) {
         state.position.theta -= MOVEMENT_SPEED * delta;
