@@ -14,7 +14,7 @@ pub struct State {
 impl State {
     pub fn new() -> State {
         State {
-            position: SphericalCoordinates::from_distance(10.),
+            position: SphericalCoordinates::from(10.),
             input_mode_enabled: false,
             expression: String::new(),
             render_distance: 100,

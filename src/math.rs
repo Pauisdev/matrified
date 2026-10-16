@@ -20,8 +20,8 @@ pub struct SphericalCoordinates {
     pub theta: f32,
 }
 
-impl SphericalCoordinates {
-    pub fn from_distance(distance: f32) -> Self {
+impl From<f32> for SphericalCoordinates {
+    fn from(distance: f32) -> Self {
         SphericalCoordinates {
             distance,
             phi: 1.,
@@ -30,12 +30,12 @@ impl SphericalCoordinates {
     }
 }
 
-impl Into<Vec3> for SphericalCoordinates {
-    fn into(self) -> Vec3 {
+impl From<SphericalCoordinates> for Vec3 {
+    fn from(position: SphericalCoordinates) -> Self {
         vec3(
-            self.distance * self.phi.sin() * self.theta.cos(),
-            self.distance * self.phi.cos(),
-            self.distance * self.phi.sin() * self.theta.sin(), // swap y with z because here Y points up
+            position.distance * position.phi.sin() * position.theta.cos(),
+            position.distance * position.phi.cos(),
+            position.distance * position.phi.sin() * position.theta.sin(), // swap y with z because here Y points up
         )
     }
 }
