@@ -57,7 +57,7 @@ fn handle_movement(state: &mut State) {
     let delta = get_frame_time();
 
     let (_, mouse_wheel) = mouse_wheel(); // -1 backwards, +1 forward
-    state.position.distance -= mouse_wheel * ZOOM_SPEED * get_frame_time();
+    state.position.distance -= mouse_wheel * ZOOM_SPEED * delta;
 
     if is_key_down(KeyCode::D) {
         state.position.theta -= MOVEMENT_SPEED * delta;
@@ -66,10 +66,10 @@ fn handle_movement(state: &mut State) {
         state.position.theta += MOVEMENT_SPEED * delta;
     }
     if is_key_down(KeyCode::W) {
-        state.position.phi -= MOVEMENT_SPEED * get_frame_time();
+        state.position.phi -= MOVEMENT_SPEED * delta;
     }
     if is_key_down(KeyCode::S) {
-        state.position.phi += MOVEMENT_SPEED * get_frame_time();
+        state.position.phi += MOVEMENT_SPEED * delta;
     }
 
     state.position.phi = state.position.phi.clamp(0.01, PI - 0.01);
