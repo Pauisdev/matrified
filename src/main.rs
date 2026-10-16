@@ -1,10 +1,10 @@
 mod function;
 mod math;
+mod state;
 mod ui;
-use std::f32::consts::PI;
-
+use crate::state::State;
 use macroquad::prelude::*;
-use ui::State;
+use std::f32::consts::PI;
 
 #[macroquad::main("Matrified")]
 async fn main() {
@@ -20,9 +20,6 @@ async fn main() {
         set_camera(&camera);
         draw_grid(20, 1., WHITE, GRAY);
 
-        let (_, mouse_wheel) = mouse_wheel(); // -1 backwards, +1 forward
-        state.zoom += mouse_wheel * 0.02;
-
         function::draw(
             &state.expression,
             state.render_distance,
@@ -34,6 +31,17 @@ async fn main() {
 
         camera.position = state.position.into();
 
+        handle_movement(&mut state);
+        if is_key_pressed(KeyCode::F1) {
+            state.show_debug_info = !state.show_debug_info;
+        }
+        if is_key_pressed(KeyCode::Tab) {
+            state.input_mode_enabled = !state.input_mode_enabled;
+        }
+        if is_key_pressed(KeyCode::Escape) {
+            break;
+        }
+
         // drop back to 2D so we can draw text/shapes on screen
         set_default_camera();
 
@@ -41,35 +49,34 @@ async fn main() {
             ui::draw_debug_info(&state);
         }
 
-        if is_key_down(KeyCode::D) {
-            state.position.theta -= 3. * get_frame_time();
-        }
-        if is_key_down(KeyCode::A) {
-            state.position.theta += 3. * get_frame_time();
-        }
-
-        if is_key_down(KeyCode::W) {
-            state.position.phi -= 3. * get_frame_time();
-        }
-        if is_key_down(KeyCode::S) {
-            state.position.phi += 3. * get_frame_time();
-        }
-
-        state.position.phi = state.position.phi.clamp(0.01, PI - 0.01);
-
-        if is_key_pressed(KeyCode::F1) {
-            state.show_debug_info = !state.show_debug_info;
-        }
-        if is_key_pressed(KeyCode::Escape) {
-            break;
-        }
         ui::draw(&mut state);
-
-        if is_key_pressed(KeyCode::Tab) {
-            state.input_mode_enabled = !state.input_mode_enabled;
-        }
-
         egui_macroquad::draw();
+
         next_frame().await;
     }
+}
+
+const MOVEMENT_SPEED: f32 = 2.;
+const ZOOM_SPEED: f32 = 30.;
+
+fn handle_movement(state: &mut State) {
+    let delta = get_frame_time();
+
+    let (_, mouse_wheel) = mouse_wheel(); // -1 backwards, +1 forward
+    state.position.distance -= mouse_wheel * ZOOM_SPEED * get_frame_time();
+
+    if is_key_down(KeyCode::D) {
+        state.position.theta -= MOVEMENT_SPEED * delta;
+    }
+    if is_key_down(KeyCode::A) {
+        state.position.theta += MOVEMENT_SPEED * delta;
+    }
+    if is_key_down(KeyCode::W) {
+        state.position.phi -= MOVEMENT_SPEED * get_frame_time();
+    }
+    if is_key_down(KeyCode::S) {
+        state.position.phi += MOVEMENT_SPEED * get_frame_time();
+    }
+
+    state.position.phi = state.position.phi.clamp(0.01, PI - 0.01);
 }

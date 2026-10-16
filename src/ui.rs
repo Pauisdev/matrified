@@ -1,39 +1,8 @@
+use crate::state::State;
 use egui_macroquad::egui;
 use macroquad::prelude::*;
 
-use crate::math::SphericalCoordinates;
-
 const FONT_SIZE: f32 = 32.;
-
-pub struct State {
-    pub position: SphericalCoordinates,
-    pub zoom: f32,
-    pub input_mode_enabled: bool,
-    pub show_debug_info: bool,
-    pub expression: String,
-    pub render_distance: i32,
-    pub root_splits: i32,
-    pub root_find_tries: i32,
-    pub sample_size: i32,
-    pub distance_draw_cutoff: f32,
-}
-
-impl State {
-    pub fn new() -> State {
-        State {
-            position: SphericalCoordinates::from_distance(10.),
-            zoom: 0.,
-            input_mode_enabled: false,
-            show_debug_info: true,
-            expression: String::new(),
-            render_distance: 100,
-            root_splits: 100,
-            root_find_tries: 10,
-            sample_size: 1000,
-            distance_draw_cutoff: 40.,
-        }
-    }
-}
 
 /// Draws the UI with whatever `state` given.
 pub fn draw(state: &mut State) {
@@ -67,12 +36,10 @@ pub fn draw_debug_info(state: &State) {
         "\
             [camera] \n\
             * position: {} \n\
-            * zoom: {:.2}\n\n\
             [general] \n\
             * fps: {} \n\
             ",
         state.position,
-        state.zoom,
         get_fps(),
     );
     draw_multiline_text(debug_info, 0., 20., FONT_SIZE, None, WHITE);
