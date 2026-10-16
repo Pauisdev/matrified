@@ -34,9 +34,6 @@ async fn main() {
             break;
         }
 
-        // drop back to 2D so we can draw text/shapes on screen
-        set_default_camera();
-
         ui::draw(&mut state);
         egui_macroquad::draw();
 
