@@ -4,7 +4,7 @@ mod state;
 mod ui;
 use crate::state::State;
 use macroquad::prelude::*;
-use std::f32::consts::PI;
+use std::f32::{INFINITY, consts::PI};
 
 #[macroquad::main("Matrified")]
 async fn main() {
@@ -52,6 +52,7 @@ async fn main() {
 
 const MOVEMENT_SPEED: f32 = 2.;
 const ZOOM_SPEED: f32 = 30.;
+const MIN_ZOOM: f32 = 1.;
 
 fn handle_movement(state: &mut State) {
     let delta = get_frame_time();
@@ -73,4 +74,5 @@ fn handle_movement(state: &mut State) {
     }
 
     state.position.phi = state.position.phi.clamp(0.01, PI - 0.01);
+    state.position.distance = state.position.distance.clamp(MIN_ZOOM, f32::INFINITY);
 }
