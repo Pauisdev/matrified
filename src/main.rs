@@ -5,6 +5,7 @@ mod ui;
 use crate::state::State;
 use macroquad::prelude::*;
 use std::f32::consts::PI;
+mod scene;
 
 #[macroquad::main("Matrified")]
 async fn main() {
@@ -18,7 +19,8 @@ async fn main() {
     loop {
         clear_background(BLACK);
         set_camera(&camera);
-        draw_grid(20, 1., WHITE, GRAY);
+
+        scene::draw();
 
         function::draw(
             &state.expression,
