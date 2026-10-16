@@ -1,11 +1,53 @@
+use std::fmt::Display;
+
 use macroquad::prelude::*;
 
-pub fn rotate_x(original: &Vec3, angle: f32) -> Vec3 {
+pub fn rotate_x(original: &Vec3, yaw: f32, pitch: f32) -> Vec3 {
+    let x = original.x;
+    let z = original.y;
+    let y = original.z;
     vec3(
-        original.x * angle.cos() - original.z * angle.sin(),
-        original.y,
-        original.x * angle.sin() + original.z * angle.cos(),
+        (yaw.cos() * pitch.cos()) * x + (-yaw.sin() * pitch.cos()) * y + pitch.sin() * z,
+        yaw.sin() * x + yaw.cos() * y,
+        (-pitch.sin() * yaw.cos()) * x + (-pitch.sin() * -yaw.sin()) * y + pitch.cos() * z,
     )
+}
+
+#[derive(Copy, Clone)]
+pub struct SphericalCoordinates {
+    pub distance: f32,
+    pub phi: f32,
+    pub theta: f32,
+}
+
+impl SphericalCoordinates {
+    pub fn from_distance(distance: f32) -> Self {
+        SphericalCoordinates {
+            distance,
+            phi: 1.,
+            theta: 0.,
+        }
+    }
+}
+
+impl Into<Vec3> for SphericalCoordinates {
+    fn into(self) -> Vec3 {
+        vec3(
+            self.distance * self.phi.sin() * self.theta.cos(),
+            self.distance * self.phi.cos(),
+            self.distance * self.phi.sin() * self.theta.sin(), // swap y with z because here Y points up
+        )
+    }
+}
+
+impl Display for SphericalCoordinates {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "({:.2}, {:.2}°, {:.2}°)",
+            self.distance, self.phi, self.theta
+        )
+    }
 }
 
 ///

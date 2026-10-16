@@ -1,10 +1,12 @@
 use egui_macroquad::egui;
 use macroquad::prelude::*;
 
+use crate::math::SphericalCoordinates;
+
 const FONT_SIZE: f32 = 32.;
 
 pub struct State {
-    pub rotation_radians: f32,
+    pub position: SphericalCoordinates,
     pub zoom: f32,
     pub input_mode_enabled: bool,
     pub show_debug_info: bool,
@@ -19,7 +21,7 @@ pub struct State {
 impl State {
     pub fn new() -> State {
         State {
-            rotation_radians: 0.,
+            position: SphericalCoordinates::from_distance(10.),
             zoom: 0.,
             input_mode_enabled: false,
             show_debug_info: true,
@@ -60,24 +62,16 @@ pub fn draw(state: &mut State) {
     });
 }
 
-pub fn draw_debug_info(camera: &Camera3D, state: &State) {
+pub fn draw_debug_info(state: &State) {
     let debug_info = format!(
         "\
             [camera] \n\
-            * direction: ({}, {}, {}) \n\
-            * position: ({:.2}, {:.2}, {:.2}) \n\
-            * rotation_radians: {:.2}pi\n\
+            * position: {} \n\
             * zoom: {:.2}\n\n\
             [general] \n\
             * fps: {} \n\
             ",
-        camera.target.x,
-        camera.target.y,
-        camera.target.z,
-        camera.position.x,
-        camera.position.y,
-        camera.position.z,
-        state.rotation_radians,
+        state.position,
         state.zoom,
         get_fps(),
     );
