@@ -1,8 +1,11 @@
 use macroquad::prelude::*;
 
-pub fn draw() {
+use crate::{function, state::State};
+
+pub fn draw(state: &State) {
     draw_grid(20, 1., WHITE, GRAY);
     draw_arrows();
+    function::draw(&state);
 }
 
 fn draw_arrows() {
@@ -21,4 +24,5 @@ fn draw_arrow(direction: Vec3, size: f32, thickness: f32, color: Color) {
         None,
         color,
     );
+    // TODO: draw tip (cone)
 }

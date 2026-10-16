@@ -1,28 +1,21 @@
 use cached::cached;
 use macroquad::prelude::*;
 
-use crate::math;
+use crate::{math, state::State};
 
-pub fn draw(
-    expression: &String,
-    render_distance: i32,
-    distance_draw_cutoff: f32,
-    sample_size: i32,
-    root_splits: i32,
-    root_tries: i32,
-) {
+pub fn draw(state: &State) {
     let computed_points = compute_points(
-        expression.clone(),
-        render_distance,
-        sample_size,
-        root_splits,
-        root_tries,
+        state.expression.clone(),
+        state.render_distance,
+        state.sample_size,
+        state.root_splits,
+        state.root_find_tries,
     );
     if computed_points.len() == 0 {
         return;
     }
 
-    render(computed_points, distance_draw_cutoff);
+    render(computed_points, state.distance_draw_cutoff);
 }
 
 fn parse(expression: &String) -> Option<impl Fn(f64) -> f64> {
