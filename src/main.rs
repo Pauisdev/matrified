@@ -20,16 +20,8 @@ async fn main() {
         clear_background(BLACK);
         set_camera(&camera);
 
-        scene::draw();
-
-        function::draw(
-            &state.expression,
-            state.render_distance,
-            state.distance_draw_cutoff,
-            state.sample_size,
-            state.root_splits,
-            state.root_find_tries,
-        );
+        scene::draw(&state);
+        function::draw(&state);
 
         camera.position = state.position.into();
 
@@ -62,17 +54,10 @@ fn handle_movement(state: &mut State) {
     let (_, mouse_wheel) = mouse_wheel(); // -1 backwards, +1 forward
     state.position.distance -= mouse_wheel * state.position.distance / ZOOM_SPEED * delta;
 
-    if is_key_down(KeyCode::D) {
-        state.position.theta -= MOVEMENT_SPEED * delta;
-    }
-    if is_key_down(KeyCode::A) {
-        state.position.theta += MOVEMENT_SPEED * delta;
-    }
-    if is_key_down(KeyCode::W) {
-        state.position.phi -= MOVEMENT_SPEED * delta;
-    }
-    if is_key_down(KeyCode::S) {
-        state.position.phi += MOVEMENT_SPEED * delta;
+    if is_mouse_button_down(MouseButton::Right) {
+        let mouse_delta = mouse_delta_position();
+        state.position.theta -= MOVEMENT_SPEED * mouse_delta.x;
+        state.position.phi += MOVEMENT_SPEED * mouse_delta.y;
     }
 
     state.position.phi = state.position.phi.clamp(0.01, PI - 0.01);
