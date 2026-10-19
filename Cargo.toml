@@ -5,11 +5,10 @@ edition = "2024"
 
 [dependencies]
 cached = "4.0.2"
-criterion = { version = "0.8.2", features = ["async_tokio"] }
+criterion = { version = "0.8.2" }
 egui-macroquad = "0.17.3"
 macroquad = "0.4.16"
 meval = "0.2.0"
-tokio = { version = "1.53.3", features = ["full"] }
 
 [[bench]]
 name = "points"
