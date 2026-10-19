@@ -1,6 +1,11 @@
 use std::f32::consts::PI;
 
-use crate::{app::EventLoop, function, math::SphericalCoordinates, scene, ui};
+use crate::{
+    app::{EventLoop, StateHandler},
+    function,
+    math::SphericalCoordinates,
+    scene, ui,
+};
 use macroquad::prelude::*;
 
 const MOVEMENT_SPEED: f32 = 2.;
@@ -19,8 +24,8 @@ pub struct State {
     pub camera: Camera3D,
 }
 
-impl State {
-    pub fn new() -> State {
+impl StateHandler<State> for State {
+    fn new() -> State {
         State {
             position: SphericalCoordinates::from(10.),
             input_mode_enabled: false,
@@ -60,19 +65,19 @@ impl State {
         }
     }
 
-    pub fn update(&mut self, event_loop: &mut EventLoop) {
+    fn update(&mut self, event_loop: &mut EventLoop) {
         self.handle_key_press(event_loop);
         self.camera.position = self.position.into();
     }
 
-    pub fn render(&self) {
+    fn render(&self) {
         clear_background(BLACK);
         set_camera(&self.camera);
         scene::draw(&self);
         function::draw(&self);
     }
 
-    pub fn ui(&mut self) {
+    fn ui(&mut self) {
         ui::draw(self);
         egui_macroquad::draw();
     }

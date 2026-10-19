@@ -44,3 +44,11 @@ impl EventLoop {
         self.should_exit = true
     }
 }
+
+pub trait StateHandler<T> {
+    fn new() -> T;
+    fn handle_key_press(&mut self, event_loop: &mut EventLoop);
+    fn update(&mut self, event_loop: &mut EventLoop);
+    fn render(&self);
+    fn ui(&mut self);
+}

@@ -5,7 +5,6 @@ use macroquad::prelude::*;
 /// Draws the UI with whatever `state` given.
 pub fn draw(state: &mut State) {
     egui_macroquad::ui(|egui_ctx| {
-        println!("{}", state.input_mode_enabled);
         if !state.input_mode_enabled {
             return;
         }
