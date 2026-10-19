@@ -32,6 +32,12 @@ impl App {
     }
 }
 
+impl Default for App {
+    fn default() -> Self {
+        App::new(&AppOptions { fullscreen: true })
+    }
+}
+
 pub struct EventLoop {
     should_exit: bool,
 }

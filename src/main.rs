@@ -1,13 +1,7 @@
-mod app;
-mod function;
-mod math;
-mod state;
-mod ui;
-use crate::app::{App, AppOptions};
-mod scene;
+use matrified::app::App;
 
 #[macroquad::main("Matrified")]
 async fn main() {
-    let mut app = App::new(&AppOptions { fullscreen: true });
+    let mut app = App::default();
     app.run().await;
 }
