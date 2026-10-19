@@ -46,9 +46,12 @@ fn hard_function_extreme_variant(c: &mut Criterion) {
 }
 
 criterion_group!(
-    compute,
-    normal_function,
-    hard_function,
-    hard_function_extreme_variant
+    name = compute;
+    config = Criterion::default().sample_size(50);
+    targets =
+        normal_function,
+        hard_function,
+        hard_function_extreme_variant
 );
+
 criterion_main!(compute);
