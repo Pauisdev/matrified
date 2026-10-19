@@ -51,7 +51,7 @@ fn render(points: Vec<(f32, f32)>, distance_draw_cutoff: f32) {
 }
 
 #[cached]
-fn compute_points(
+pub fn compute_points(
     expression: String,
     render_distance: i32,
     sample_size: i32,
