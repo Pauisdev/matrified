@@ -37,7 +37,7 @@ fn hard_function_hard_variant(c: &mut Criterion) {
             compute_points_no_cache(
                 black_box(String::from("tan(e^x)/x")),
                 black_box(200),
-                black_box(500000),
+                black_box(500_000),
                 black_box(100),
                 black_box(10),
             )
@@ -51,7 +51,7 @@ fn hard_function_extreme_variant(c: &mut Criterion) {
             compute_points_no_cache(
                 black_box(String::from("tan(e^x)/x")),
                 black_box(200),
-                black_box(5000000),
+                black_box(5_000_000),
                 black_box(100),
                 black_box(10),
             )
