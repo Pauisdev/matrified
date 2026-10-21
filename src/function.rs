@@ -1,10 +1,8 @@
-use cached::cached;
+use crate::{math, state::State};
 use macroquad::prelude::*;
 
-use crate::{math, state::State};
-
-pub fn draw(state: &State) {
-    let computed_points = compute_points(
+pub fn draw(state: &mut State) {
+    let computed_points = state.cache.compute_points(
         state.expression.clone(),
         state.render_distance,
         state.sample_size,
@@ -15,7 +13,7 @@ pub fn draw(state: &State) {
         return;
     }
 
-    render(computed_points, state.distance_draw_cutoff);
+    render(&computed_points, state.distance_draw_cutoff);
 }
 
 fn parse(expression: &String) -> Option<impl Fn(f64) -> f64> {
@@ -30,7 +28,7 @@ fn parse(expression: &String) -> Option<impl Fn(f64) -> f64> {
     Some(f)
 }
 
-fn render(points: Vec<(f32, f32)>, distance_draw_cutoff: f32) {
+fn render(points: &Vec<(f32, f32)>, distance_draw_cutoff: f32) {
     let mut i = 0;
     while i < points.len() - 1 {
         let (x1, y1) = points[i];
@@ -50,7 +48,6 @@ fn render(points: Vec<(f32, f32)>, distance_draw_cutoff: f32) {
     }
 }
 
-#[cached]
 pub fn compute_points(
     expression: String,
     render_distance: i32,

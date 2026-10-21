@@ -1,4 +1,5 @@
 pub mod app;
+mod cache;
 pub mod function;
 pub mod math;
 mod scene;

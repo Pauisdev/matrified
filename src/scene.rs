@@ -2,10 +2,10 @@ use macroquad::prelude::*;
 
 use crate::{function, state::State};
 
-pub fn draw(state: &State) {
+pub fn draw(state: &mut State) {
     draw_grid(20, 1., WHITE, GRAY);
     draw_arrows();
-    function::draw(&state);
+    function::draw(state);
 }
 
 fn draw_arrows() {

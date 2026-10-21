@@ -55,6 +55,6 @@ pub trait StateHandler<T> {
     fn new() -> T;
     fn handle_key_press(&mut self, event_loop: &mut EventLoop);
     fn update(&mut self, event_loop: &mut EventLoop);
-    fn render(&self);
+    fn render(&mut self);
     fn ui(&mut self);
 }

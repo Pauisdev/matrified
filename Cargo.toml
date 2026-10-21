@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-cached = "4.0.2"
 egui-macroquad = "0.17.3"
 macroquad = "0.4.16"
 meval = "0.2.0"

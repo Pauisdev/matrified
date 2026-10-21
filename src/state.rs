@@ -2,6 +2,7 @@ use std::f32::consts::PI;
 
 use crate::{
     app::{EventLoop, StateHandler},
+    cache::Cache,
     function,
     math::SphericalCoordinates,
     scene, ui,
@@ -22,6 +23,7 @@ pub struct State {
     pub sample_size: i32,
     pub distance_draw_cutoff: f32,
     pub camera: Camera3D,
+    pub cache: Cache,
 }
 
 impl StateHandler<State> for State {
@@ -29,16 +31,17 @@ impl StateHandler<State> for State {
         State {
             position: SphericalCoordinates::from(10.),
             input_mode_enabled: false,
-            expression: String::new(),
+            expression: String::from("tan(e^x)/x"),
             render_distance: 100,
             root_splits: 100,
             root_find_tries: 10,
-            sample_size: 1000,
+            sample_size: 30000,
             distance_draw_cutoff: 40.,
             camera: Camera3D {
                 up: vec3(0., 1., 0.),
                 ..Default::default()
             },
+            cache: Cache::new(),
         }
     }
 
@@ -70,11 +73,10 @@ impl StateHandler<State> for State {
         self.camera.position = self.position.into();
     }
 
-    fn render(&self) {
+    fn render(&mut self) {
         clear_background(BLACK);
         set_camera(&self.camera);
-        scene::draw(&self);
-        function::draw(&self);
+        scene::draw(self);
     }
 
     fn ui(&mut self) {
