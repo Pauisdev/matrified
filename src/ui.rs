@@ -1,8 +1,10 @@
 use crate::state::State;
+#[cfg(not(target_arch = "wasm32"))]
 use egui_macroquad::egui;
 use macroquad::prelude::*;
 
 /// Draws the UI with whatever `state` given.
+#[cfg(not(target_arch = "wasm32"))]
 pub fn draw(state: &mut State) {
     egui_macroquad::ui(|egui_ctx| {
         if !state.input_mode_enabled {

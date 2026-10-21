@@ -3,7 +3,6 @@ use std::f32::consts::PI;
 use crate::{
     app::{EventLoop, StateHandler},
     cache::Cache,
-    function,
     math::SphericalCoordinates,
     scene, ui,
 };
@@ -80,7 +79,9 @@ impl StateHandler<State> for State {
     }
 
     fn ui(&mut self) {
+        #[cfg(not(target_arch = "wasm32"))]
         ui::draw(self);
+        #[cfg(not(target_arch = "wasm32"))]
         egui_macroquad::draw();
     }
 }

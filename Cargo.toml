@@ -3,8 +3,11 @@ name = "matrified"
 version = "0.1.0"
 edition = "2024"
 
-[dependencies]
+# dont use egui for web as it fails to build
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 egui-macroquad = "0.17.3"
+
+[dependencies]
 macroquad = "0.4.16"
 meval = "0.2.0"
 
