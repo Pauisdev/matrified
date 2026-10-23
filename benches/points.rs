@@ -1,7 +1,7 @@
 use std::{hint::black_box, time::Duration};
 
 use criterion::{Criterion, criterion_group, criterion_main};
-use matrified::function::compute_points_no_cache;
+use matrified::function::compute_points as compute_points_no_cache;
 
 fn normal_function(c: &mut Criterion) {
     c.bench_function("Square fn [5K sample size]", |b| {
